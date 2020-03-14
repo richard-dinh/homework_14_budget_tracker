@@ -20,7 +20,7 @@ mongoose.connect("mongodb://localhost/budget", {
 });
 
 // routes
-app.use(require("./routes/api.js"));
+app.use(require("./routes"));
 
 require('./config')
 .then( () => app.listen(3000))
