@@ -3,7 +3,11 @@ let myChart;
 
 const initRender = () => {
   //get all items in indexDB before fetching
-  getIndexDB()
+  const request = indexedDB.open('budgetDB', 1)
+  request.onsuccess = event => {
+    db = event.target.result
+    getIndexDB()
+  }
   fetch("/api/transaction")
     .then(response => {
       return response.json();
