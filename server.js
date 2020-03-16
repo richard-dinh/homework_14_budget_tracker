@@ -17,5 +17,5 @@ app.use(express.static("public"));
 app.use(require("./routes"));
 
 require('./config')
-.then( () => app.listen(3000))
+.then( () => app.listen(process.env.PORT || 3000))
 .catch( error => console.error(error))
