@@ -1,3 +1,3 @@
-const Transaction = require('./Transaction.js')
+const Transaction = require('./transaction.js')
 
 module.exports = {Transaction}
