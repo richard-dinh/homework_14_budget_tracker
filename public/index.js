@@ -1,26 +1,18 @@
 let transactions = [];
 let myChart;
 
-const initRender = () => {
-  //get all items in indexDB before fetching
-  const request = indexedDB.open('budgetDB', 1)
-  request.onsuccess = event => {
-    db = event.target.result
-    getIndexDB()
-  }
-  fetch("/api/transaction")
-    .then(response => {
-      return response.json();
-    })
-    .then(data => {
-      // save db data on global variable
-      transactions = data;
-  
-      populateTotal();
-      populateTable();
-      populateChart();
-    });
-}
+fetch("/api/transaction")
+  .then(response => {
+    return response.json();
+  })
+  .then(data => {
+    // save db data on global variable
+    transactions = data;
+
+    populateTotal();
+    populateTable();
+    populateChart();
+  });
 
 function populateTotal() {
   // reduce transaction amounts to a single total value
@@ -206,5 +198,4 @@ request.onerror = event => {
   console.log('Could not connect to budgetDB in IndexDB')
 }
 
-initRender()
 window.addEventListener('online', getIndexDB)
