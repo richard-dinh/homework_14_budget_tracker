@@ -151,3 +151,51 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+//indexDB for offline caching
+
+let db
+
+const request = indexedDB.open('budgetDB', 1)
+request.onupgradeneeded = event => {
+  db = event.target.result
+  const objectStore = db.createObjectStore('transactions', {autoIncrement: true})
+}
+
+const getIndexDB = () => {
+  const transaction = db.transaction(['transactions'], 'readwrite')
+  const store = transaction.objectStore('transactions')
+
+  const getAll = store.getAll()
+  //get all items in indexDB and write them into the database
+  getAll.onsuccess = () => {
+    axios.post('/api/transaction/bulk', getAll.result)
+    .then( () => {
+      //after inserting all into the database, clear the store
+      const transaction = db.transaction(['transactions'], 'readwrite')
+      const store = transaction.objectStore('transactions')
+      store.clear()
+    })
+    .catch( error => console.error(error))
+  }
+}
+
+//save a record to getIndexDB if offline
+const saveRecord = amount => {
+  const transaction = db.transaction(['transactions'], 'readwrite')
+  const store = transaction.objectStore('transactions')
+  store.add(amount)
+}
+request.onsuccess = event => {
+  db = event.target.result
+  //in the event we go back online, run getIndexDB
+  if(navigator.onLine){
+    getIndexDB()
+  }
+}
+
+request.onerror = event => {
+  console.log('Could not connect to budgetDB in IndexDB')
+}
+
+window.addEventListener('online', getIndexDB)
