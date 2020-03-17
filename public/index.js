@@ -1,18 +1,21 @@
 let transactions = [];
 let myChart;
 
-fetch("/api/transaction")
-  .then(response => {
-    return response.json();
-  })
-  .then(data => {
-    // save db data on global variable
-    transactions = data;
-
-    populateTotal();
-    populateTable();
-    populateChart();
-  });
+const initRender = {
+  
+  fetch("/api/transaction")
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      // save db data on global variable
+      transactions = data;
+  
+      populateTotal();
+      populateTable();
+      populateChart();
+    });
+}
 
 function populateTotal() {
   // reduce transaction amounts to a single total value
@@ -175,6 +178,8 @@ const getIndexDB = () => {
       const transaction = db.transaction(['transactions'], 'readwrite')
       const store = transaction.objectStore('transactions')
       store.clear()
+      //render list again
+      initRender()
     })
     .catch( error => console.error(error))
   }
@@ -199,3 +204,4 @@ request.onerror = event => {
 }
 
 window.addEventListener('online', getIndexDB)
+initRender()
