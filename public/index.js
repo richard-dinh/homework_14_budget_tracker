@@ -1,8 +1,7 @@
 let transactions = [];
 let myChart;
 
-const initRender = {
-  
+const initRender = () => {
   fetch("/api/transaction")
     .then(response => {
       return response.json();
@@ -178,7 +177,7 @@ const getIndexDB = () => {
       const transaction = db.transaction(['transactions'], 'readwrite')
       const store = transaction.objectStore('transactions')
       store.clear()
-      //render list again
+      //render budget after posting from indexDB
       initRender()
     })
     .catch( error => console.error(error))
